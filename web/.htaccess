@@ -1,0 +1,8 @@
+# パーフェクト PHP P208
+# 指定されたファイルが存在する場合にはそのファイルを読み込み、
+# 存在しなければどんな URL であろうとすべて index.php にアクセスする
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
