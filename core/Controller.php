@@ -110,4 +110,37 @@ abstract class Controller
 
         return $view->render($path, $variables, $layout);
     }
+
+    /**
+     * 404エラー画面を出力
+     *
+     * @throws HttpNotFoundException
+     */
+    protected function forward404()
+    {
+        throw new HttpNotFoundException('Forwarded 404 page from '
+            . $this->controller_name . '/' . $this->action_name);
+    }
+
+    /**
+     * 指定されたURLへリダイレクト
+     *
+     * @param string $url
+     */
+    protected function redirect($url)
+    {
+        // 同じアプリケーション内で別アクションのリダイレクトを
+        // 行うときは PATH_INFO 部分のみ指定すればいいようにする
+        if (!preg_match('#https?://#', $url)) {
+            $protocol = $this->request->isSsl() ? 'https://' : 'http://';
+            $host = $this->request->getHost();
+            $base_url = $this->request->getBaseUrl();
+
+            $url = $protocol . $host . $base_url . $url;
+        }
+
+        // 302 はブラウザにリダイレクトを伝えるためのステータスコード
+        $this->response->setStatusCode(302, 'Found');
+        $this->response->setHttpHeader('Location', $url);
+    }
 }
