@@ -143,4 +143,58 @@ abstract class Controller
         $this->response->setStatusCode(302, 'Found');
         $this->response->setHttpHeader('Location', $url);
     }
+
+    /**
+     * CSRFトークンを生成
+     *
+     * トークンを生成し、セッションに格納した上でトークンを返す
+     * トークンをフォームごとに識別する
+     *
+     * @param string $form_name
+     * @return string $token
+     */
+    protected function generateCsrfToken($form_name)
+    {
+        $key = 'csrf_tokens/' . $form_name;
+        $tokens = $this->session->get($key, array());
+
+        // 同一アクションを複数画面開いたときの対応
+        if (count($tokens) >= 10) {
+            array_shift($tokens); // 古いものから削除する
+        }
+
+        $token = sha1($form_name . session_id() . microtime());
+        $tokens[] = $token;
+
+        $this->session->set($key, $tokens);
+
+        return $token;
+    }
+
+    /**
+     * CSRFトークンが妥当かチェック
+     *
+     * リクエストされてきたトークンとセッションに格納されたトークンを
+     * 比較した結果を返し、同時にセッションからトークンを削除する
+     *
+     * @param string $form_name
+     * @param string $token
+     * @return boolean
+     */
+    protected function checkCsrfToken($form_name, $token)
+    {
+        $key = 'csrf_tokens/' . $form_name;
+        $tokens = $this->session->get($key, array());
+
+        // セッション上にトークンが格納されているかを判定する
+        if (false !== ($pos = array_search($token, $tokens, true))) {
+            unset($tokens[$pos]);
+            $this->session->set($key, $tokens);
+
+            // 処理を継続してよいことを伝えるために true を返す
+            return true;
+        }
+
+        return false;
+    }
 }
