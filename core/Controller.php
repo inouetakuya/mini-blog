@@ -145,7 +145,7 @@ abstract class Controller
     }
 
     /**
-     * CSRFトークンを生成
+     * CSRF（クロスサイトリクエストフォージェリ）トークンを生成
      *
      * トークンを生成し、セッションに格納した上でトークンを返す
      * トークンをフォームごとに識別する
@@ -172,7 +172,7 @@ abstract class Controller
     }
 
     /**
-     * CSRFトークンが妥当かチェック
+     * CSRF（クロスサイトリクエストフォージェリ）トークンが妥当かチェック
      *
      * リクエストされてきたトークンとセッションに格納されたトークンを
      * 比較した結果を返し、同時にセッションからトークンを削除する
@@ -192,6 +192,28 @@ abstract class Controller
             $this->session->set($key, $tokens);
 
             // 処理を継続してよいことを伝えるために true を返す
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 指定されたアクションが認証済みでないとアクセスできないか判定
+     *
+     * アクションごとにログイン状態を判定し、必要であればログイン画面に遷移させる
+     * Controller に定義されているすべてのアクションがログイン必須であるとき、
+     * $auth_actions に true を指定するとすべてのアクションがログイン必須として
+     * 扱われるようにする
+     *
+     * @param string $action
+     * @return boolean
+     */
+    protected function needsAuthentication($action)
+    {
+        if ($this->auth_actions === true
+            || (is_array($this->auth_actions) && in_array($action, $this->auth_actions))
+        ) {
             return true;
         }
 
