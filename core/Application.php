@@ -229,6 +229,9 @@ abstract class Application
 
         $controller = $this->findController($controller_class);
         if ($controller === false) {
+
+            // 例外クラスコンストラクタの第1引数はエラーメッセージ
+            // デバッグを行いやすくするためにも、状況に応じて適切なエラーメッセージを指定
             throw new HttpNotFoundException($controller_class . ' controller is not found.');
         }
 
