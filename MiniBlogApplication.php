@@ -3,6 +3,13 @@
 /**
  * MiniBlogApplication.
  *
+ * P271 アクションの作成手順
+ * 1. データベースアクセス処理を Repository クラスに定義
+ * 2. ルーティングを MiniBlogApplicalon クラスに定義
+ * 3. コントローラクラスを定義
+ * 4. コントローラクラスにアクションを定義
+ * 5. アクションのビューファイルを記述
+ *
  * @author Katsuhiro Ogawa <fivestar@nequal.jp>
  */
 class MiniBlogApplication extends Application
