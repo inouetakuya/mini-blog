@@ -63,7 +63,7 @@ class UserRepository extends DbRepository
         return false;
     }
 
-    public function fetchAllFollowingByUserId($user_id)
+    public function fetchAllFollowingsByUserId($user_id)
     {
         $sql = "
             SELECT u.*
