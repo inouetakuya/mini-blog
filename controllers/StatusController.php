@@ -7,7 +7,7 @@
  */
 class StatusController extends Controller
 {
-    // protected $auth_actions = array('index', 'post');
+    protected $auth_actions = array('index', 'post');
 
     public function indexAction()
     {
